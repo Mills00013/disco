@@ -42,6 +42,23 @@ function _disco_generate_color() {
 }
 
 /**
+ * Function to create style attributes
+ */
+function _disco_generate_style() {
+  $style = '';
+
+  $colors = variable_get('disco_color');
+  if ($colors['color'] === 'color') {
+    $style .= 'color:#' . _disco_generate_color() . ';';
+  }
+  if ($colors['bgcolor'] === 'bgcolor') {
+    $style .= 'background-color:#' . _disco_generate_color() . ';';
+  }
+
+  return $style;
+}
+
+/**
  * Implements template_process_html().
  *
  * Process variables for html.tpl.php
@@ -56,9 +73,10 @@ function disco_process_html(&$vars) {
   @$html->loadHTML($vars['page']);
   $xpath = new DOMXPath($html);
 
-  foreach($xpath->query("//*") as $node)
-  {   
-      $node->setAttribute("style","background-color:#" . _disco_generate_color() . ";color:#" . generate_color() .";");
+  if (_disco_generate_style() != '') {
+    foreach($xpath->query("//*") as $node) {
+        $node->setAttribute("style", _disco_generate_style());
+    }
   }
 
   $discoHtml = $html->saveHtml();
