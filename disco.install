@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * Implements hook_install().
+ *
+ * Runs during install, creating defaults for our variables
+ */
+function disco_install() {
+  variable_set('disco_color_enabled',0);
+  variable_set('disco_color_settings',array(
+    'color' => 0,
+    'bgcolor' =>0,
+  ));
+  variable_set('disco_shadow_enabled',0);
+  variable_set('disco_shadow_settings',array(
+    'ranfont' => 0,
+    'ransize' =>0,
+  ));
+  variable_set('disco_font_enabled',0);
+  variable_set('disco_font_settings',array(
+    'rancolor' => 0,
+    'ranopacity' =>0,
+    'randepth' =>0,
+  ));
+}
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Runs during uninstall, cleaning up old variables
+ */
+function disco_uninstall() {
+  variable_del('disco_color');
+  variable_del('disco_color_enabled');
+  variable_del('disco_color_settings');
+  variable_del('disco_shadow_enabled');
+  variable_del('disco_shadow_settings');
+  variable_del('disco_font_enabled');
+  variable_del('disco_font_settings');
+}
