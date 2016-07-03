@@ -64,6 +64,22 @@ function _disco_generate_shadow() {
   return $shadow;
 }
 
+function _disco_generate_font_family() {
+  $families = array(
+    'serif',
+    'sans-serif',
+    'monospace',
+    'cursive',
+    'fantasy',
+  );
+  $family = $families[mt_rand(0,4)];
+  return $family;
+}
+
+function _disco_generate_font_size() {
+  return mt_rand(3,30) . 'px';
+}
+
 /**
  * Function to create style attributes
  */
@@ -85,6 +101,16 @@ function _disco_generate_style() {
     $style .= '-moz-box-shadow:' . $shadow . ';';
     $style .= '-webkit-box-shadow:' . $shadow . ';';
     $style .= 'box-shadow:' . $shadow . ';';
+  }
+
+  if (variable_get('disco_font_enabled') === 1) {
+    $font = variable_get('disco_font_settings');
+    if ($font['ranfont'] === 'ranfont') {
+      $style .= 'font-family:' . _disco_generate_font_family() . ';';
+    }
+    if ($font['ransize'] === 'ransize') {
+      $style .= 'font-size:' . _disco_generate_font_size() . ';';
+    }
   }
 
   return $style;
