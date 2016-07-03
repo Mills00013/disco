@@ -163,6 +163,31 @@ function disco_settings_form($form, &$form_state) {
   );
 
 
+  $disco_font_values = array(
+    'ranfont' => t('Random Fonts'),
+    'ransize' => t('Random Font Sizes'),
+  );
+
+  $form['disco_fonts'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Font Options'),
+  );
+  $form['disco_fonts']['disco_font_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Fonts Enabled'),
+    '#default_value' => variable_get('disco_font_enabled'),
+  );
+  $form['disco_fonts']['disco_font_settings'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $disco_font_values,
+    '#title' => t('Font Settings'),
+    '#default_value' => variable_get('disco_font_settings'),
+    '#description' => t('Select which font options you want to apply.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disco_font_enabled"]' => array('checked' => TRUE))),
+  );
+
 
   // Create a submit button and handle variable setting
   return system_settings_form($form);
