@@ -110,20 +110,59 @@ function disco_menu() {
  * @see disco_menu()
  */
 function disco_settings_form($form, &$form_state) {
-  // Create values to use in our drop down list
   $disco_color_values = array(
     'color' => t('Text Color'),
     'bgcolor' => t('Background Color'),
   );
 
-  // Build the form
   $form['disco_color'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Color Options'),
+  );
+  $form['disco_color']['disco_color_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Colors Enabled'),
+    '#default_value' => variable_get('disco_color_enabled'),
+  );
+  $form['disco_color']['disco_color_settings'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Color Options'),
     '#options' => $disco_color_values,
-    '#default_value' => variable_get('disco_color'),
+    '#default_value' => variable_get('disco_color_settings'),
     '#description' => t('Select which color options you want to apply.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disco_color_enabled"]' => array('checked' => TRUE))),
   );
+
+
+  $disco_shadow_values = array(
+    'rancolor' => t('Random Colors'),
+    'ranopacity' => t('Random Opacities'),
+    'randepth' => t('Random Depth'),
+  );
+
+  $form['disco_shadows'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Shadow Options'),
+  );
+  $form['disco_shadows']['disco_shadow_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Shadows Enabled'),
+    '#default_value' => variable_get('disco_shadow_enabled'),
+  );
+  $form['disco_shadows']['disco_shadow_settings'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $disco_shadow_values,
+    '#title' => t('Shadow Settings'),
+    '#default_value' => variable_get('disco_shadow_settings'),
+    '#description' => t('Select which shadow options you want to apply.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disco_shadow_enabled"]' => array('checked' => TRUE))),
+  );
+
+
 
   // Create a submit button and handle variable setting
   return system_settings_form($form);
