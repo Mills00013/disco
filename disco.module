@@ -126,7 +126,7 @@ function disco_settings_form($form, &$form_state) {
   );
   $form['disco_color']['disco_color_settings'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Color Options'),
+    '#title' => t('Options'),
     '#options' => $disco_color_values,
     '#default_value' => variable_get('disco_color_settings'),
     '#description' => t('Select which color options you want to apply.'),
@@ -154,7 +154,7 @@ function disco_settings_form($form, &$form_state) {
   $form['disco_shadows']['disco_shadow_settings'] = array(
     '#type' => 'checkboxes',
     '#options' => $disco_shadow_values,
-    '#title' => t('Shadow Settings'),
+    '#title' => t('Options'),
     '#default_value' => variable_get('disco_shadow_settings'),
     '#description' => t('Select which shadow options you want to apply.'),
     '#states' => array(
@@ -180,7 +180,7 @@ function disco_settings_form($form, &$form_state) {
   $form['disco_fonts']['disco_font_settings'] = array(
     '#type' => 'checkboxes',
     '#options' => $disco_font_values,
-    '#title' => t('Font Settings'),
+    '#title' => t('Options'),
     '#default_value' => variable_get('disco_font_settings'),
     '#description' => t('Select which font options you want to apply.'),
     '#states' => array(
