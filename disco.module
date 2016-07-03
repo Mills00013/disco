@@ -41,18 +41,50 @@ function _disco_generate_color() {
   return _disco_generate_color_byte() . _disco_generate_color_byte() . _disco_generate_color_byte();
 }
 
+function _disco_generate_shadow() {
+  $shadow = '';
+  $shadow_settings = variable_get('disco_shadow_settings');
+
+  if ($shadow_settings['randepth'] === 'randepth') {
+    $shadow = mt_rand(0,30) . 'px ' . mt_rand(0,30) . 'px ' . mt_rand(0,30) . 'px ';
+  } else {
+    $shadow = '5px 5px 5px ';
+  }
+  if ($shadow_settings['rancolor'] === 'rancolor') {
+    $shadow .= 'rgba(' . mt_rand(0,255) . ',' . mt_rand(0,255) . ',' . mt_rand(0,255) . ',';
+  } else {
+    $shadow .= 'rgba(0,0,0,';
+  }
+  if ($shadow_settings['ranopacity'] === 'ranopacity') {
+    $shadow .= mt_rand(0,10) / 10 . ')';
+  } else {
+    $shadow .= '1)';
+  }
+
+  return $shadow;
+}
+
 /**
  * Function to create style attributes
  */
 function _disco_generate_style() {
   $style = '';
 
-  $colors = variable_get('disco_color');
-  if ($colors['color'] === 'color') {
-    $style .= 'color:#' . _disco_generate_color() . ';';
+  if (variable_get('disco_color_enabled') === 1) {
+    $colors = variable_get('disco_color_settings');
+    if ($colors['color'] === 'color') {
+      $style .= 'color:#' . _disco_generate_color() . ';';
+    }
+    if ($colors['bgcolor'] === 'bgcolor') {
+      $style .= 'background-color:#' . _disco_generate_color() . ';';
+    }
   }
-  if ($colors['bgcolor'] === 'bgcolor') {
-    $style .= 'background-color:#' . _disco_generate_color() . ';';
+
+  if (variable_get('disco_shadow_enabled') === 1) {
+    $shadow = _disco_generate_shadow();
+    $style .= '-moz-box-shadow:' . $shadow . ';';
+    $style .= '-webkit-box-shadow:' . $shadow . ';';
+    $style .= 'box-shadow:' . $shadow . ';';
   }
 
   return $style;
