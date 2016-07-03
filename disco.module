@@ -97,10 +97,17 @@ function _disco_generate_style() {
   }
 
   if (variable_get('disco_shadow_enabled') === 1) {
-    $shadow = _disco_generate_shadow();
-    $style .= '-moz-box-shadow:' . $shadow . ';';
-    $style .= '-webkit-box-shadow:' . $shadow . ';';
-    $style .= 'box-shadow:' . $shadow . ';';
+    $location = variable_get('disco_shadow_location');
+    if ($location['text'] === 'text') {
+      $shadow = _disco_generate_shadow();
+      $style .= 'text-shadow:' . $shadow . ';';
+    }
+    if ($location['objects'] === 'objects') {
+      $shadow = _disco_generate_shadow();
+      $style .= '-moz-box-shadow:' . $shadow . ';';
+      $style .= '-webkit-box-shadow:' . $shadow . ';';
+      $style .= 'box-shadow:' . $shadow . ';';
+    }
   }
 
   if (variable_get('disco_font_enabled') === 1) {
@@ -194,6 +201,10 @@ function disco_settings_form($form, &$form_state) {
   );
 
 
+  $disco_shadow_location = array(
+    'text' => t('Text'),
+    'objects' => t('Other Objects'),
+  );
   $disco_shadow_values = array(
     'rancolor' => t('Random Colors'),
     'ranopacity' => t('Random Opacities'),
@@ -208,6 +219,18 @@ function disco_settings_form($form, &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Shadows Enabled'),
     '#default_value' => variable_get('disco_shadow_enabled'),
+  );
+  $form['disco_shadows']['disco_shadow_location'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $disco_shadow_location,
+    '#title' => t('Location'),
+    '#default_value' => variable_get('disco_shadow_location'),
+    '#description' => t('Select where you would like shadows to apply.<br />
+                         If an option is not selected, a default 
+                         will be applied.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disco_shadow_enabled"]' => array('checked' => TRUE))),
   );
   $form['disco_shadows']['disco_shadow_settings'] = array(
     '#type' => 'checkboxes',

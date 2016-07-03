@@ -12,15 +12,19 @@ function disco_install() {
     'bgcolor' =>0,
   ));
   variable_set('disco_shadow_enabled',0);
-  variable_set('disco_shadow_settings',array(
-    'ranfont' => 0,
-    'ransize' =>0,
+  variable_set('disco_shadow_location',array(
+    'text' => 0,
+    'objects' =>0,
   ));
-  variable_set('disco_font_enabled',0);
-  variable_set('disco_font_settings',array(
+  variable_set('disco_shadow_settings',array(
     'rancolor' => 0,
     'ranopacity' =>0,
     'randepth' =>0,
+  ));
+  variable_set('disco_font_enabled',0);
+  variable_set('disco_font_settings',array(
+    'ranfont' => 0,
+    'ransize' =>0,
   ));
 }
 
@@ -30,10 +34,10 @@ function disco_install() {
  * Runs during uninstall, cleaning up old variables
  */
 function disco_uninstall() {
-  variable_del('disco_color');
   variable_del('disco_color_enabled');
   variable_del('disco_color_settings');
   variable_del('disco_shadow_enabled');
+  variable_del('disco_shadow_location');
   variable_del('disco_shadow_settings');
   variable_del('disco_font_enabled');
   variable_del('disco_font_settings');
