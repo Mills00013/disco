@@ -244,7 +244,11 @@ function disco_settings_form($form, &$form_state) {
     '#description' => t('Select which color options you want to apply.'),
     '#states' => array(
       'visible' => array(
-        ':input[name="disco_color_enabled"]' => array('checked' => TRUE))),
+        ':input[name="disco_color_enabled"]' => array(
+          'checked' => TRUE
+        )
+      )
+    ),
   );
 
 
@@ -277,7 +281,11 @@ function disco_settings_form($form, &$form_state) {
                          will be applied.'),
     '#states' => array(
       'visible' => array(
-        ':input[name="disco_shadow_enabled"]' => array('checked' => TRUE))),
+        ':input[name="disco_shadow_enabled"]' => array(
+          'checked' => TRUE
+        )
+      )
+    ),
   );
   $form['disco_shadows']['disco_shadow_settings'] = array(
     '#type' => 'checkboxes',
@@ -287,7 +295,11 @@ function disco_settings_form($form, &$form_state) {
     '#description' => t('Select which shadow options you want to apply.'),
     '#states' => array(
       'visible' => array(
-        ':input[name="disco_shadow_enabled"]' => array('checked' => TRUE))),
+        ':input[name="disco_shadow_enabled"]' => array(
+          'checked' => TRUE
+        )
+      )
+    ),
   );
 
 
@@ -313,7 +325,11 @@ function disco_settings_form($form, &$form_state) {
     '#description' => t('Select which font options you want to apply.'),
     '#states' => array(
       'visible' => array(
-        ':input[name="disco_font_enabled"]' => array('checked' => TRUE))),
+        ':input[name="disco_font_enabled"]' => array(
+          'checked' => TRUE
+        )
+      )
+    ),
   );
 
 
