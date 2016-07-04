@@ -132,20 +132,25 @@ function _disco_generate_style() {
  *   Array that holds all the HTML information ready to render
  */
 function disco_process_html(&$vars) {
-  $html = new DOMDocument();
-  //TODO Investigate why this shit below breaks admin pages
-  //@$html->loadHTML($vars['page'], LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-  @$html->loadHTML($vars['page']);
-  $xpath = new DOMXPath($html);
-
   if (_disco_generate_style() != '') {
-    foreach($xpath->query("//*") as $node) {
-        $node->setAttribute("style", _disco_generate_style());
-    }
-  }
+    $html = new DOMDocument();
+    @$html->loadHTML(
+      mb_convert_encoding(
+        '<html>' . $vars['page']. '</html>',
+        'HTML-ENTITIES',
+        'UTF-8'
+      ),
+      LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+    );
+    $xpath = new DOMXPath($html);
 
-  $discoHtml = $html->saveHtml();
-  $vars['page'] = $discoHtml;
+      foreach($xpath->query("//*[not(self::html)]") as $node) {
+          $node->setAttribute("style", _disco_generate_style());
+      }
+
+    $discoHtml = substr(substr($html->saveHtml(),6),0,-8);
+    $vars['page'] = $discoHtml;
+  }
 }
 
 /**
