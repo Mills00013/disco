@@ -31,40 +31,54 @@ function disco_help($path, $arg) {
  * Function to generate a single byte for a HEX color code.
  */
 function _disco_generate_color_byte() {
+  //Generating a random hex byte from a decimal number
   return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
 }
 
 /**
- * Function to create a full color code (without the hash)
+ * Function to create a full color code (without the hash).
  */
 function _disco_generate_color() {
+  //Combining three of the random hex bytes into a single six digit color code
   return _disco_generate_color_byte() . _disco_generate_color_byte() . _disco_generate_color_byte();
 }
 
+/**
+ * Function to generate a css shadow.
+ */
 function _disco_generate_shadow() {
   $shadow = '';
   $shadow_settings = variable_get('disco_shadow_settings');
 
   if ($shadow_settings['randepth'] === 'randepth') {
+    // Maxxing users out at 30 px so that the page isn't saturated by shadows
     $shadow = mt_rand(0,30) . 'px ' . mt_rand(0,30) . 'px ' . mt_rand(0,30) . 'px ';
   } else {
     $shadow = '5px 5px 5px ';
   }
   if ($shadow_settings['rancolor'] === 'rancolor') {
+    // Using decimal colors here for rgb
     $shadow .= 'rgba(' . mt_rand(0,255) . ',' . mt_rand(0,255) . ',' . mt_rand(0,255) . ',';
   } else {
     $shadow .= 'rgba(0,0,0,';
   }
   if ($shadow_settings['ranopacity'] === 'ranopacity') {
+    // Generating a number between 0-1 by tenths
     $shadow .= mt_rand(0,10) / 10 . ')';
   } else {
     $shadow .= '1)';
   }
 
+  // Output should look like this: '5px 5px 5px rgba(0,0,0,1)'
   return $shadow;
 }
 
+/**
+ * Function to randomly select a font family.
+ */
 function _disco_generate_font_family() {
+  // Default font families available
+  // See https://developer.mozilla.org/en-US/docs/Web/CSS/font-family
   $families = array(
     'serif',
     'sans-serif',
@@ -72,16 +86,24 @@ function _disco_generate_font_family() {
     'cursive',
     'fantasy',
   );
+  // Choosing a random family from the list
   $family = $families[mt_rand(0,4)];
   return $family;
 }
 
+/**
+ * Function to randomly generate a size.
+ */
 function _disco_generate_font_size() {
+  // Maxxing users out to 30 so the fonts are not too big
+  // Font sizes smaller than 3 are two small to even be funny
   return mt_rand(3,30) . 'px';
 }
 
 /**
- * Function to create style attributes
+ * Function to create style attributes.
+ *
+ * Statements below each add a CSS style to be applied inline to elements
  */
 function _disco_generate_style() {
   $style = '';
@@ -128,27 +150,44 @@ function _disco_generate_style() {
  *
  * Process variables for html.tpl.php
  *
+ * Elements are not special snowflakes here. We will be applying CSS styles
+ * to every single item on the page whether they're rendered or contain
+ * any content. Items that are loaded after this hook is called are exempt
+ * to this rule. This contains items like those rendered in page_top.
+ *
  * @param vars 
  *   Array that holds all the HTML information ready to render
  */
 function disco_process_html(&$vars) {
+  // Dont bother running this if nothing is going to be applied
   if (_disco_generate_style() != '') {
     $html = new DOMDocument();
-    @$html->loadHTML(
+    // We're going to intercept the HTML before it's sent to the browser
+    // This can be found in $vars['page']
+    $html->loadHTML(
+      // We've need explicitly use UTF-8 otherwise ISO-8859-1 is used
       mb_convert_encoding(
+        // We need to add <html> tags around the page content because
+        // when we pull it out, it's just a snippet and loadHTML will
+        // attempt to put it's own tags on there.
         '<html>' . $vars['page']. '</html>',
         'HTML-ENTITIES',
         'UTF-8'
       ),
+      // We tell loadHTML that we don't need to add tags automatically
       LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
     );
     $xpath = new DOMXPath($html);
-
-      foreach($xpath->query("//*[not(self::html)]") as $node) {
-          $node->setAttribute("style", _disco_generate_style());
-      }
-
+    // Loop through the HTML and tag everything except for the <html> tags
+    // we explicitly added above.
+    foreach($xpath->query("//*[not(self::html)]") as $node) {
+      // Add a style attribute to every found node
+      $node->setAttribute("style", _disco_generate_style());
+    }
+    // Strip the first 6 and last 8 characters off the HTML. This
+    // cleans out the <html> tags we added above.
     $discoHtml = substr(substr($html->saveHtml(),6),0,-8);
+    // Send the modified page back to Drupal
     $vars['page'] = $discoHtml;
   }
 }
