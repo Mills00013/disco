@@ -6,26 +6,6 @@
  * Runs during install, creating defaults for our variables
  */
 function disco_install() {
-  variable_set('disco_color_enabled',0);
-  variable_set('disco_color_settings',array(
-    'color' => 0,
-    'bgcolor' =>0,
-  ));
-  variable_set('disco_shadow_enabled',0);
-  variable_set('disco_shadow_location',array(
-    'text' => 0,
-    'objects' =>0,
-  ));
-  variable_set('disco_shadow_settings',array(
-    'rancolor' => 0,
-    'ranopacity' =>0,
-    'randepth' =>0,
-  ));
-  variable_set('disco_font_enabled',0);
-  variable_set('disco_font_settings',array(
-    'ranfont' => 0,
-    'ransize' =>0,
-  ));
 }
 
 /**

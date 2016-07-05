@@ -234,13 +234,16 @@ function disco_settings_form($form, &$form_state) {
   $form['disco_color']['disco_color_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Colors Enabled'),
-    '#default_value' => variable_get('disco_color_enabled'),
+    '#default_value' => variable_get('disco_color_enabled',0),
   );
   $form['disco_color']['disco_color_settings'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Options'),
     '#options' => $disco_color_values,
-    '#default_value' => variable_get('disco_color_settings'),
+    '#default_value' => variable_get('disco_color_settings',array(
+      'color' => 0,
+      'bgcolor' =>0,
+    )),
     '#description' => t('Select which color options you want to apply.'),
     '#states' => array(
       'visible' => array(
@@ -269,13 +272,16 @@ function disco_settings_form($form, &$form_state) {
   $form['disco_shadows']['disco_shadow_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Shadows Enabled'),
-    '#default_value' => variable_get('disco_shadow_enabled'),
+    '#default_value' => variable_get('disco_shadow_enabled',0),
   );
   $form['disco_shadows']['disco_shadow_location'] = array(
     '#type' => 'checkboxes',
     '#options' => $disco_shadow_location,
     '#title' => t('Location'),
-    '#default_value' => variable_get('disco_shadow_location'),
+    '#default_value' => variable_get('disco_shadow_location',array(
+      'text' => 0,
+      'objects' =>0,
+    )),
     '#description' => t('Select where you would like shadows to apply.<br />
                          If an option is not selected, a default 
                          will be applied.'),
@@ -291,7 +297,11 @@ function disco_settings_form($form, &$form_state) {
     '#type' => 'checkboxes',
     '#options' => $disco_shadow_values,
     '#title' => t('Options'),
-    '#default_value' => variable_get('disco_shadow_settings'),
+    '#default_value' => variable_get('disco_shadow_settings',array(
+      'rancolor' => 0,
+      'ranopacity' =>0,
+      'randepth' =>0,
+    )),
     '#description' => t('Select which shadow options you want to apply.'),
     '#states' => array(
       'visible' => array(
@@ -315,13 +325,16 @@ function disco_settings_form($form, &$form_state) {
   $form['disco_fonts']['disco_font_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Fonts Enabled'),
-    '#default_value' => variable_get('disco_font_enabled'),
+    '#default_value' => variable_get('disco_font_enabled',0),
   );
   $form['disco_fonts']['disco_font_settings'] = array(
     '#type' => 'checkboxes',
     '#options' => $disco_font_values,
     '#title' => t('Options'),
-    '#default_value' => variable_get('disco_font_settings'),
+    '#default_value' => variable_get('disco_font_settings',array(
+      'ranfont' => 0,
+      'ransize' =>0,
+    )),
     '#description' => t('Select which font options you want to apply.'),
     '#states' => array(
       'visible' => array(
