@@ -200,6 +200,20 @@ function disco_process_html(&$vars) {
  *
  * Generates menu items and permissions for administration.
  */
+function disco_permission() {
+  return array(
+    'disco admin' => array(
+      'title' => t('Administer Disco settings'),
+      'description' => t('Perform configuration for the Disco module.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Generates menu items and permissions for administration.
+ */
 function disco_menu() {
   // Create the menu
   $items = array();
@@ -209,7 +223,7 @@ function disco_menu() {
     'description' => 'Configuration for Disco',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('disco_settings_form'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('disco admin'),
     'type' => MENU_NORMAL_ITEM,
     'file' => 'disco.admin.inc',
   );
