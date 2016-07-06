@@ -183,8 +183,9 @@ function _disco_get_users() {
   $users = entity_load('user');
   $user_names = array();
   foreach ($users as $user_id => $user) {
-    $user_names[] = $user->name;
+    if ($user->uid != '0') {
+      $user_names[$user->uid] = $user->name;
+    }
   }
-  array_shift($user_names);
   return $user_names;
 }

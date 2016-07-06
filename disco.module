@@ -149,6 +149,51 @@ function _disco_generate_style() {
 }
 
 /**
+ * Function to determine if we're wanting to restrict the
+ * application to a specific user or role.
+ */
+function _disco_check_users_and_roles() {
+  $user_en = variable_get('disco_user_enabled');
+  $role_en = variable_get('disco_role_enabled');
+  $users = variable_get('disco_users');
+  $roles = variable_get('disco_roles');
+
+  // Grab info about the current user
+  global $user;
+
+  // We're using user filtering
+  if ($user_en === 1) {
+    // Loop through to determine if our user matches
+    // one of the users selected for application.
+    foreach ($users as $disco_user) {
+      if ($disco_user === $user->uid) {
+        return TRUE;
+      }
+    }
+  }
+
+  // We're using role filtering
+  if ($role_en === 1) {
+    // Loop through to determine if our user has one
+    // of the roles we're looking for.
+    foreach ($roles as $role) {
+      if (user_has_role($role)) {
+        return TRUE;
+      }
+    }
+  }
+
+  // We don't want to filter on anything
+  if ($user_en === 0 && $role_en === 0) {
+    return TRUE;
+  }
+
+  // We want to filter but don't have any users
+  // or roles selected to filter on.
+  return FALSE;
+}
+
+/**
  * Implements template_process_html().
  *
  * Process variables for html.tpl.php
@@ -158,40 +203,45 @@ function _disco_generate_style() {
  * any content. Items that are loaded after this hook is called are exempt
  * to this rule. This contains items like those rendered in page_top.
  *
- * @param vars 
+ * @param vars
  *   Array that holds all the HTML information ready to render
+ *
+ * @see _disco_generate_style()
+ * @see _disco_check_users_and_roles()
  */
 function disco_process_html(&$vars) {
-  // Dont bother running this if nothing is going to be applied
-  if (_disco_generate_style() != '') {
-    $html = new DOMDocument();
-    // We're going to intercept the HTML before it's sent to the browser
-    // This can be found in $vars['page']
-    $html->loadHTML(
-      // We've need explicitly use UTF-8 otherwise ISO-8859-1 is used
-      mb_convert_encoding(
-        // We need to add <html> tags around the page content because
-        // when we pull it out, it's just a snippet and loadHTML will
-        // attempt to put it's own tags on there.
-        '<html>' . $vars['page'] . '</html>',
-        'HTML-ENTITIES',
-        'UTF-8'
-      ),
-      // We tell loadHTML that we don't need to add tags automatically
-      LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
-    );
-    $xpath = new DOMXPath($html);
-    // Loop through the HTML and tag everything except for the <html> tags
-    // we explicitly added above.
-    foreach ($xpath->query("//*[not(self::html)]") as $node) {
-      // Add a style attribute to every found node
-      $node->setAttribute("style", _disco_generate_style());
+  if (_disco_check_users_and_roles()) {
+    // Dont bother running this if nothing is going to be applied
+    if (empty(_disco_generate_style())) {
+      $html = new DOMDocument();
+      // We're going to intercept the HTML before it's sent to the browser
+      // This can be found in $vars['page']
+      $html->loadHTML(
+        // We've need explicitly use UTF-8 otherwise ISO-8859-1 is used
+        mb_convert_encoding(
+          // We need to add <html> tags around the page content because
+          // when we pull it out, it's just a snippet and loadHTML will
+          // attempt to put it's own tags on there.
+          '<html>' . $vars['page'] . '</html>',
+          'HTML-ENTITIES',
+          'UTF-8'
+        ),
+        // We tell loadHTML that we don't need to add tags automatically
+        LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+      );
+      $xpath = new DOMXPath($html);
+      // Loop through the HTML and tag everything except for the <html> tags
+      // we explicitly added above.
+      foreach ($xpath->query("//*[not(self::html)]") as $node) {
+        // Add a style attribute to every found node
+        $node->setAttribute("style", _disco_generate_style());
+      }
+      // Strip the first 6 and last 8 characters off the HTML. This
+      // cleans out the <html> tags we added above.
+      $discoHtml = substr(substr($html->saveHtml(), 6), 0, -8);
+      // Send the modified page back to Drupal
+      $vars['page'] = $discoHtml;
     }
-    // Strip the first 6 and last 8 characters off the HTML. This
-    // cleans out the <html> tags we added above.
-    $discoHtml = substr(substr($html->saveHtml(), 6), 0, -8);
-    // Send the modified page back to Drupal
-    $vars['page'] = $discoHtml;
   }
 }
 
