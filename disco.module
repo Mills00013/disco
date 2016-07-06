@@ -239,7 +239,7 @@ function _disco_check_users_and_roles() {
 function disco_process_html(&$vars) {
   if (_disco_check_users_and_roles()) {
     // Dont bother running this if nothing is going to be applied
-    if (empty(_disco_generate_style())) {
+    if (_disco_generate_style() !== '') {
       $html = new DOMDocument();
       // We're going to intercept the HTML before it's sent to the browser
       // This can be found in $vars['page']
