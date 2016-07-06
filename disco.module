@@ -20,10 +20,37 @@
 function disco_help($path, $arg) {
   // Switch based on where we're at in Drupal
   switch ($path) {
-    case "admin/help#disco":
-      // When we're in the admin menu, tell the user generically what this is
-      return '<p>' . t("Generate randomly applied colors to most elements on a page.") . '</p>';
-      break;
+    case 'admin/help#disco':
+      // https://www.drupal.org/node/161085
+      $filepath = dirname(__FILE__) . '/README.md';
+      if (file_exists($filepath)) {
+        $readme = file_get_contents($filepath);
+      }
+      else {
+        $filepath = dirname(__FILE__) . '/README.txt';
+        if (file_exists($filepath)) {
+          $readme = file_get_contents($filepath);
+        }
+      }
+      if (!isset($readme)) {
+        return NULL;
+      }
+      if (module_exists('markdown')) {
+        $filters = module_invoke('markdown', 'filter_info');
+        $info = $filters['filter_markdown'];
+
+        if (function_exists($info['process callback'])) {
+          $output = $info['process callback']($readme, NULL);
+        }
+        else {
+          $output = '<pre>' . $readme . '</pre>';
+        }
+      }
+      else {
+        $output = '<pre>' . $readme . '</pre>';
+      }
+
+      return $output;
   }
 }
 
