@@ -130,6 +130,61 @@ function disco_settings_form($form, &$form_state) {
   );
 
 
+  $form['disco_users'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('User Options'),
+  );
+  $form['disco_users']['disco_user_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Restrict to specific users'),
+    '#default_value' => variable_get('disco_user_enabled',0),
+  );
+  $form['disco_users']['disco_users'] = array(
+    '#type' => 'select',
+    '#title' => t('Users'),
+    '#multiple' => TRUE,
+    '#options' => _disco_get_users(),
+    '#default_value' => variable_get('disco_users',array()),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disco_user_enabled"]' => array(
+          'checked' => TRUE
+        )
+      )
+    ),
+  );
+  $form['disco_users']['disco_role_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Restrict to specific roles'),
+    '#default_value' => variable_get('disco_role_enabled',0),
+  );
+  $form['disco_users']['disco_roles'] = array(
+    '#type' => 'select',
+    '#title' => t('Roles'),
+    '#multiple' => TRUE,
+    '#options' => user_roles(),
+    '#default_value' => variable_get('disco_roles',array()),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disco_role_enabled"]' => array(
+          'checked' => TRUE
+        )
+      )
+    ),
+  );
+
+
+
   // Create a submit button and handle variable setting
   return system_settings_form($form);
+}
+
+function _disco_get_users() {
+  $users = entity_load('user');
+  $user_names = array();
+  foreach ($users as $user_id => $user) {
+    $user_names[] = $user->name;
+  }
+  array_shift($user_names);
+  return $user_names;
 }

@@ -24,4 +24,8 @@ function disco_uninstall() {
   variable_del('disco_shadow_settings');
   variable_del('disco_font_enabled');
   variable_del('disco_font_settings');
+  variable_del('disco_user_enabled');
+  variable_del('disco_users');
+  variable_del('disco_role_enabled');
+  variable_del('disco_roles');
 }
